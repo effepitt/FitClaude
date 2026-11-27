@@ -145,11 +145,11 @@ for g in bridges:
         origin=ctr-ax*span/2
         rise=min(2.2, 0.35+0.12*span) if span<45 else 0.0
         bridge_info.append({'poly':p,'origin':origin,'axis':ax,'span':span,'rise':rise})
-        dense=shapely.segmentize(shapely.geometry.polygon.orient(p,1.0),0.4)
+        dense=shapely.segmentize(shapely.geometry.polygon.orient(p,1.0),1.0)
         v2,f=trimesh.creation.triangulate_polygon(dense, engine='earcut')
         # suddivisione per curvare bene l'impalcato
         tm=trimesh.Trimesh(np.c_[v2,np.zeros(len(v2))],f,process=False)
-        tm=tm.subdivide_to_size(1.0 if span<45 else 50.0, max_iter=6)
+        tm=tm.subdivide_to_size(2.0 if span<45 else 50.0, max_iter=4)
         def zf(x,y):
             t=np.clip(np.dot(np.array([x,y])-origin,ax)/span,0,1)
             return GROUND_Z+rise*math.sin(math.pi*t)
